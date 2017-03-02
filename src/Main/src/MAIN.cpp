@@ -29,11 +29,6 @@ namespace patch
     }
 }
 
-
-// comment trial for github uploading
-
-// comment trial for github uploading part 2
-
 //----------------------------  MAIN  ----------------------------//
 int main (int argc, char** argv)
 {
@@ -47,6 +42,9 @@ int main (int argc, char** argv)
   std::string filename;
 
   parameters= GetUserInputs(argc, argv, parameters);
+
+  // Writing the xy pose of the cylinders extracted in the local car frame to a text file
+  ofstream outputFile("output_for_matlab.txt");
 
   // To get the pose
   std::vector<Eigen::Matrix4d> T= read_transformations();  
@@ -110,9 +108,6 @@ int main (int argc, char** argv)
     UpdateMAP_saveFrame( cylinders, frames, landmarks, T[i], parameters );
 
 
-
-
-
     //----------------------------  VISUALIZATION  ----------------------------//
     // Remove previous point clouds
     viewer.removeAllPointClouds();
@@ -170,13 +165,35 @@ int main (int argc, char** argv)
                             frames[i].numExpected, frames[i].repRate);
   }
   
+  cout<< "\n \n \n" << std::endl; 
+
+  // Show the velo measurements in each frame
   for (int i = 0; i < frames.size(); ++i)
   {
-    printf("%i)\t \n", i);
+    printf("%i) z_velo\t \n", i);
     for (int j = 0; j < frames[i].numFeatures ; j++)
     {
-    	cout<< frames[i].z[j]<< endl;
+      printf("%-.2f\t  %-.2f\t %-.2f\t %-.2f\t %-.2f\t \n", 
+             frames[i].z_velo[j][0], frames[i].z_velo[j][1], frames[i].z_velo[j][2],
+             frames[i].z_velo[j][3], frames[i].z_velo[j][4]);
     }
+  }
+
+  cout<< "\n \n \n" << std::endl; 
+
+  // Show the nav measurements in each frame
+  cout<< "\n \n \n" << std::endl; 
+
+  for (int i = 0; i < frames.size(); ++i)
+  {
+    printf("%i) z_nav\t \n", i);
+    for (int j = 0; j < frames[i].numFeatures ; j++)
+    {
+      printf("%-.2f\t  %-.2f\t %-.5f\t %-.5f\t %-.5f\t \n", 
+             frames[i].z_nav[j][0], frames[i].z_nav[j][1], frames[i].z_nav[j][2],
+             frames[i].z_nav[j][3], frames[i].z_nav[j][4]);
+    }
+    outputFile << endl;
   }
 
   return (0);

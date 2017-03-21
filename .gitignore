@@ -1,0 +1,4 @@
+# ignores mac meta files
+*.DS_Store
+# ignores the build directory
+[Bb]uild/
